@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS admins;
+DROP TABLE IF EXISTS rank_histories;
+DROP TABLE IF EXISTS students;

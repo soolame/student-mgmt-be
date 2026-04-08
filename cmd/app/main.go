@@ -11,6 +11,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/soolame/student-mgmt-be/internal/config"
+	database "github.com/soolame/student-mgmt-be/internal/database/gorm"
+	"github.com/soolame/student-mgmt-be/internal/logger"
 	"github.com/soolame/student-mgmt-be/internal/routes"
 )
 
@@ -18,7 +20,12 @@ func main() {
 
 	router := gin.Default()
 	config := config.Load()
-	log.Println("Starting server in Environemnt", config.Environment)
+	_, err := database.Load(config)
+	if err != nil {
+		logger.Error("failed to load db ")
+		log.Fatal("failed to load db")
+	}
+	logger.Info("Starting the server [ENV]", config.Environment)
 	routes.SetUpRoutes(*router)
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
