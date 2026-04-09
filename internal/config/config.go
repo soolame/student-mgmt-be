@@ -14,10 +14,7 @@ type Config struct {
 }
 
 func (c Config) IsEnvLocal() bool {
-	if c.Environment == "local" {
-		return true
-	}
-	return false
+	return c.Environment == "local"
 }
 
 type DBConfig struct {
@@ -30,23 +27,22 @@ type DBConfig struct {
 
 func LoadDBConfig() *DBConfig {
 	return &DBConfig{
-		User:     GetEnvWithDefault("DB_USER", "postgres"),
-		Name:     GetEnvWithDefault("DB_NAME", "student_main"),
+		User:     GetRequiredEnv("DB_USER"),
+		Name:     GetRequiredEnv("DB_NAME"),
 		Port:     GetIntEnvWithDefault("DB_PORT", 5432),
-		Password: GetEnvWithDefault("DB_PASSWORD", ""),
-		Host:     GetEnvWithDefault("DB_HOST", "localhost"),
+		Password: GetRequiredEnv("DB_PASSWORD"),
+		Host:     GetRequiredEnv("DB_HOST"),
 	}
 }
 
 func Load() *Config {
 	return &Config{
-		Environment:      GetEnvWithDefault("APP_ENV", "local"),
+		Environment:      GetRequiredEnv("APP_ENV"),
 		Port:             GetEnvWithDefault("APP_PORT", "8080"),
 		DBConfig:         LoadDBConfig(),
-		MigrationEnabled: GetEnvWithDefault("MIGRATION_ENABLED", "false") == "true",
+		MigrationEnabled: GetBoolEnvWithDefault("MIGRATION_ENABLED", false),
 		MigrationPath:    GetEnvWithDefault("MIGRATION_PATH", "./internal/database/migration"),
 	}
-
 }
 
 func GetEnvWithDefault(key, defaultValue string) string {
@@ -54,6 +50,13 @@ func GetEnvWithDefault(key, defaultValue string) string {
 		return value
 	}
 	return defaultValue
+}
+
+func GetRequiredEnv(key string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	panic("missing required environment variable: " + key)
 }
 
 func GetIntEnvWithDefault(key string, defaultValue int64) int64 {
@@ -68,4 +71,18 @@ func GetIntEnvWithDefault(key string, defaultValue int64) int64 {
 	}
 
 	return int64(intVal)
+}
+
+func GetBoolEnvWithDefault(key string, defaultValue bool) bool {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
+	}
+
+	boolVal, err := strconv.ParseBool(value)
+	if err != nil {
+		return defaultValue
+	}
+
+	return boolVal
 }
