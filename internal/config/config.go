@@ -6,9 +6,18 @@ import (
 )
 
 type Config struct {
-	Environment string
-	Port        string
-	DBConfig    *DBConfig
+	Environment      string
+	Port             string
+	DBConfig         *DBConfig
+	MigrationEnabled bool
+	MigrationPath    string
+}
+
+func (c Config) IsEnvLocal() bool {
+	if c.Environment == "local" {
+		return true
+	}
+	return false
 }
 
 type DBConfig struct {
@@ -31,10 +40,13 @@ func LoadDBConfig() *DBConfig {
 
 func Load() *Config {
 	return &Config{
-		Environment: GetEnvWithDefault("APP_ENV", "development"),
-		Port:        GetEnvWithDefault("APP_PORT", "8080"),
-		DBConfig:    LoadDBConfig(),
+		Environment:      GetEnvWithDefault("APP_ENV", "local"),
+		Port:             GetEnvWithDefault("APP_PORT", "8080"),
+		DBConfig:         LoadDBConfig(),
+		MigrationEnabled: GetEnvWithDefault("MIGRATION_ENABLED", "false") == "true",
+		MigrationPath:    GetEnvWithDefault("MIGRATION_PATH", "./internal/database/migration"),
 	}
+
 }
 
 func GetEnvWithDefault(key, defaultValue string) string {
