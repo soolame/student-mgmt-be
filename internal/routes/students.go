@@ -12,5 +12,6 @@ func SetUpStudentRoutes(v1router *gin.RouterGroup) {
 	handler := handlers.NewStudentHandler(*config.GetConfig())
 
 	students.GET("/", handler.GetAllStudent)
+	students.GET("/:id", handler.GetStudentDetails)
 
 }

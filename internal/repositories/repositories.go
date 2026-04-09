@@ -1,10 +1,12 @@
 package repositories
 
 import (
+	"errors"
 	"fmt"
 
 	database "github.com/soolame/student-mgmt-be/internal/database/gorm"
 	"github.com/soolame/student-mgmt-be/internal/models"
+	"gorm.io/gorm"
 )
 
 type Repository struct {
@@ -44,4 +46,32 @@ func (r *Repository) GetAllStudents() ([]models.Student, error) {
 		return []models.Student{}, fmt.Errorf("failed to get students")
 	}
 	return students, nil
+}
+
+func (r *Repository) GetStudentDetails(id int) (models.Student, error) {
+	var student models.Student
+
+	err := database.GetAppDB().Where("id = ?", id).First(&student).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return models.Student{}, fmt.Errorf("no student with the id")
+		}
+		return models.Student{}, fmt.Errorf("failed to get student: %w", err)
+	}
+	return student, nil
+}
+
+func (r *Repository) GetLatestRankOfStudent(studentID uint) (models.RankHistory, error) {
+	var rank models.RankHistory
+
+	err := database.GetAppDB().
+		Where("student_id = ?", studentID).
+		Order("created_at DESC").
+		First(&rank).Error
+
+	if err != nil {
+		return models.RankHistory{}, err
+	}
+
+	return rank, nil
 }

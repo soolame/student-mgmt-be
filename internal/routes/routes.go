@@ -11,7 +11,7 @@ func SetUpRoutes(router gin.Engine) {
 	router.GET("/healthcheck", miscHandler.HealthCheck)
 
 	v1 := router.Group("/v1")
-	SetUpStudentRoutes(v1)
 	SetUpAdminRoutes(v1)
+	SetUpStudentRoutes(v1)
 
 }
