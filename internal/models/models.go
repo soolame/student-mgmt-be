@@ -23,6 +23,9 @@ type Student struct {
 	Class            string  `gorm:"column:class;type:varchar(20)"`
 	Address          Address `gorm:"column:address;type:jsonb"`
 	IsActive         bool    `gorm:"column:is_active;type:bool;default:true"`
+	Phone            string  `gorm:"column:phone;type:varchar(20)"`
+	Gender           string  `gorm:"column:gender;type:varchar(20)"`
+	DOB              string  `gorm:"column:dob;type:date"`
 }
 
 type RankHistory struct {
