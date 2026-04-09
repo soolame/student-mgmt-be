@@ -48,7 +48,12 @@ func (s *Service) AdminLogin(req dto.AdminLogin) (string, error) {
 
 }
 
-func NewServices(repo repositories.Repository) *Service {
-	return &Service{}
+func (s *Service) GetAllStudents() ([]models.Student, error) {
+	students, err := s.repo.GetAllStudents()
+	if err != nil {
+		logger.Error("failed to fetch all students error", err.Error())
+		return nil, fmt.Errorf("failed to fetch all students")
+	}
+	return students, nil
 
 }

@@ -36,3 +36,12 @@ func (r *Repository) CreateAdmin(email, password string) (*models.Admin, error) 
 	return &admin, nil
 }
 
+func (r *Repository) GetAllStudents() ([]models.Student, error) {
+	var students []models.Student
+
+	err := database.GetAppDB().Where("is_active = ?", true).Find(&students).Error
+	if err != nil {
+		return []models.Student{}, fmt.Errorf("failed to get students")
+	}
+	return students, nil
+}

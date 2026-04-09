@@ -1,6 +1,10 @@
 package models
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -34,11 +38,29 @@ type RankHistory struct {
 }
 
 type Address struct {
-	Line1 string
-	Line2 string
-	City  string
-	State string
-	Pin   string
+	Line1 string `json:"line1"`
+	Line2 string `json:"line2,omitempty"`
+	City  string `json:"city"`
+	State string `json:"state"`
+	Pin   string `json:"pin"`
+}
+
+func (a *Address) Scan(value interface{}) error {
+	if value == nil {
+		*a = Address{}
+		return nil
+	}
+
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("failed to scan Address: %v", value)
+	}
+
+	return json.Unmarshal(bytes, a)
+}
+
+func (a Address) Value() (driver.Value, error) {
+	return json.Marshal(a)
 }
 
 type Admin struct {
