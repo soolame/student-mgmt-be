@@ -14,4 +14,10 @@ func SetUpStudentRoutes(v1router *gin.RouterGroup) {
 	students.GET("/", handler.GetAllStudent)
 	students.GET("/:id", handler.GetStudentDetails)
 
+	protected := students.Group("/")
+	protected.Use(middleware.AuthMiddleware())
+	{
+		protected.POST("/", handler.CreateStudent)
+
+	}
 }

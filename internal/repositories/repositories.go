@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	database "github.com/soolame/student-mgmt-be/internal/database/gorm"
+	"github.com/soolame/student-mgmt-be/internal/dto"
 	"github.com/soolame/student-mgmt-be/internal/models"
 	"gorm.io/gorm"
 )
@@ -74,4 +75,27 @@ func (r *Repository) GetLatestRankOfStudent(studentID uint) (models.RankHistory,
 	}
 
 	return rank, nil
+}
+
+func (r *Repository) CreateStudent(req *dto.CreateStudent) (*models.Student, error) {
+	student := &models.Student{
+		FirstName:        req.FirstName,
+		MiddleName:       req.MiddleName,
+		LastName:         req.LastName,
+		Email:            req.Email,
+		GuardianName:     req.GuardianName,
+		GuardianRelation: req.GuardianRelation,
+		GuardianContact:  req.GuardianContact,
+		Class:            string(req.Class),
+		Address:          req.Address,
+		Phone:            req.Phone,
+		DOB:              req.DOB,
+		Gender:           req.Gender,
+	}
+
+	if err := database.GetAppDB().Create(student).Error; err != nil {
+		return nil, err
+	}
+
+	return student, nil
 }

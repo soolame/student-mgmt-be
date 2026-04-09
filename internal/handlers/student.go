@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/soolame/student-mgmt-be/internal/config"
+	"github.com/soolame/student-mgmt-be/internal/dto"
 	"github.com/soolame/student-mgmt-be/internal/logger"
 	"github.com/soolame/student-mgmt-be/internal/services"
 )
@@ -44,4 +45,21 @@ func (h *StudentHandler) GetStudentDetails(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(200, studentDetails)
+}
+
+func (h *StudentHandler) CreateStudent(ctx *gin.Context) {
+	req := dto.CreateStudent{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		logger.Error("failed to bind the body", err.Error())
+		ctx.JSON(400, gin.H{"message": "Invalid request body", "error": err.Error()})
+		return
+	}
+
+	student, err := h.service.CreateStudent(req)
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(201, gin.H{"student": student})
+
 }

@@ -79,3 +79,12 @@ func (s *Service) GetStudentDetails(id int) (*dto.StudentWithRank, error) {
 
 	return &result, nil
 }
+
+func (s *Service) CreateStudent(req dto.CreateStudent) (*models.Student, error) {
+	student, err := s.repo.CreateStudent(&req)
+	if err != nil {
+		logger.Error("failed to create student error", err)
+		return nil, fmt.Errorf("failed to create student")
+	}
+	return student, nil
+}

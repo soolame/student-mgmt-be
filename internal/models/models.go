@@ -15,8 +15,7 @@ type Student struct {
 	MiddleName string `gorm:"column:middle_name;type:varchar(100)"`
 	LastName   string `gorm:"column:last_name;type:varchar(100);not null"`
 
-	Email string `gorm:"column:email;type:varchar(150);uniqueIndex;not null"`
-
+	Email            string  `gorm:"column:email;type:varchar(150);uniqueIndex;not null"`
 	GuardianName     string  `gorm:"column:guardian_name;type:varchar(150)"`
 	GuardianRelation string  `gorm:"column:guardian_relation;type:varchar(50)"`
 	GuardianContact  string  `gorm:"column:guardian_contact;type:varchar(20)"`
@@ -41,11 +40,11 @@ type RankHistory struct {
 }
 
 type Address struct {
-	Line1 string `json:"line1"`
+	Line1 string `json:"line1" binding:"required"`
 	Line2 string `json:"line2,omitempty"`
-	City  string `json:"city"`
-	State string `json:"state"`
-	Pin   string `json:"pin"`
+	City  string `json:"city" binding:"required"`
+	State string `json:"state" binding:"required"`
+	Pin   string `json:"pin" binding:"required,len=6,numeric"`
 }
 
 func (a *Address) Scan(value interface{}) error {
