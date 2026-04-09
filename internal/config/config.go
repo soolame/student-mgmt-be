@@ -5,12 +5,15 @@ import (
 	"strconv"
 )
 
+var globalConfig Config
+
 type Config struct {
 	Environment      string
 	Port             string
 	DBConfig         *DBConfig
 	MigrationEnabled bool
 	MigrationPath    string
+	Secret           string
 }
 
 func (c Config) IsEnvLocal() bool {
@@ -36,13 +39,21 @@ func LoadDBConfig() *DBConfig {
 }
 
 func Load() *Config {
-	return &Config{
+
+	globalConfig = Config{
 		Environment:      GetRequiredEnv("APP_ENV"),
 		Port:             GetEnvWithDefault("APP_PORT", "8080"),
 		DBConfig:         LoadDBConfig(),
 		MigrationEnabled: GetBoolEnvWithDefault("MIGRATION_ENABLED", false),
 		MigrationPath:    GetEnvWithDefault("MIGRATION_PATH", "./internal/database/migration"),
+		Secret:           GetEnvWithDefault("SECRET", "Mysecret"),
 	}
+	return &globalConfig
+
+}
+
+func GetConfig() *Config {
+	return &globalConfig
 }
 
 func GetEnvWithDefault(key, defaultValue string) string {
