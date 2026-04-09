@@ -13,12 +13,12 @@ type Student struct {
 
 	Email string `gorm:"column:email;type:varchar(150);uniqueIndex;not null"`
 
-	GuardianName     string `gorm:"column:guardian_name;type:varchar(150)"`
-	GuardianRelation string `gorm:"column:guardian_relation;type:varchar(50)"`
-	GuardianContact  string `gorm:"column:guardian_contact;type:varchar(20)"`
-
-	Class   string  `gorm:"column:class;type:varchar(20)"`
-	Address Address `gorm:"column:address;type:jsonb"`
+	GuardianName     string  `gorm:"column:guardian_name;type:varchar(150)"`
+	GuardianRelation string  `gorm:"column:guardian_relation;type:varchar(50)"`
+	GuardianContact  string  `gorm:"column:guardian_contact;type:varchar(20)"`
+	Class            string  `gorm:"column:class;type:varchar(20)"`
+	Address          Address `gorm:"column:address;type:jsonb"`
+	IsActive         bool    `gorm:"column:is_active;type:bool;default:true"`
 }
 
 type RankHistory struct {
