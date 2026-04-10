@@ -20,6 +20,7 @@ func main() {
 
 	router := gin.Default()
 	config := config.Load()
+	logger.Init(logger.INFO)
 	_, err := database.Load(config)
 	if err != nil {
 		logger.Error("failed to load db ")
