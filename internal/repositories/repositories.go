@@ -99,3 +99,11 @@ func (r *Repository) CreateStudent(req *dto.CreateStudent) (*models.Student, err
 
 	return student, nil
 }
+
+func (r *Repository) UpdateStudent(student *models.Student, updates map[string]interface{}) error {
+	return database.GetAppDB().Model(student).Updates(updates).Error
+}
+
+func (r *Repository) CreateRankHistory(rank *models.RankHistory) error {
+	return database.GetAppDB().Create(rank).Error
+}

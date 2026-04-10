@@ -18,6 +18,6 @@ func SetUpStudentRoutes(v1router *gin.RouterGroup) {
 	protected.Use(middleware.AuthMiddleware())
 	{
 		protected.POST("/", handler.CreateStudent)
-
+		protected.PATCH("/:id", handler.UpdateStudent)
 	}
 }

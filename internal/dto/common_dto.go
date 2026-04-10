@@ -54,3 +54,35 @@ func (c *CreateStudent) Validate() error {
 
 	return nil
 }
+
+type RankInput struct {
+	Rank          int    `json:"rank" binding:"required"`
+	MarksAttained int    `json:"marks_attained"`
+	Grade         string `json:"grade"`
+	Term          string `json:"term" binding:"required"`
+	Year          int    `json:"year" binding:"required"`
+}
+
+type UpdateStudent struct {
+	FirstName  *string `json:"first_name" binding:"omitempty,max=100"`
+	LastName   *string `json:"last_name" binding:"omitempty,max=100"`
+	MiddleName *string `json:"middle_name" binding:"omitempty,max=100"`
+
+	Email *string `json:"email" binding:"omitempty,email,max=150"`
+
+	Class *int64 `json:"class" binding:"omitempty,min=9,max=12"`
+
+	Address *models.Address `json:"address"`
+
+	Gender *string `json:"gender" binding:"omitempty,oneof=male female other"`
+
+	Phone *string `json:"phone" binding:"omitempty,numeric,len=10"`
+
+	DOB *string `json:"dob" binding:"omitempty,datetime=2006-01-02"`
+
+	GuardianName     *string `json:"guardian_name,omitempty" binding:"omitempty,max=150"`
+	GuardianRelation *string `json:"guardian_relation,omitempty" binding:"omitempty,max=50"`
+	GuardianContact  *string `json:"guardian_contact,omitempty" binding:"omitempty,numeric,len=10"`
+
+	Rank *RankInput `json:"rank"`
+}
