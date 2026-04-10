@@ -1,6 +1,10 @@
 package models
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -11,14 +15,16 @@ type Student struct {
 	MiddleName string `gorm:"column:middle_name;type:varchar(100)"`
 	LastName   string `gorm:"column:last_name;type:varchar(100);not null"`
 
-	Email string `gorm:"column:email;type:varchar(150);uniqueIndex;not null"`
-
-	GuardianName     string `gorm:"column:guardian_name;type:varchar(150)"`
-	GuardianRelation string `gorm:"column:guardian_relation;type:varchar(50)"`
-	GuardianContact  string `gorm:"column:guardian_contact;type:varchar(20)"`
-
-	Class   string  `gorm:"column:class;type:varchar(20)"`
-	Address Address `gorm:"column:address;type:jsonb"`
+	Email            string  `gorm:"column:email;type:varchar(150);uniqueIndex;not null"`
+	GuardianName     string  `gorm:"column:guardian_name;type:varchar(150)"`
+	GuardianRelation string  `gorm:"column:guardian_relation;type:varchar(50)"`
+	GuardianContact  string  `gorm:"column:guardian_contact;type:varchar(20)"`
+	Class            string  `gorm:"column:class;type:varchar(20)"`
+	Address          Address `gorm:"column:address;type:jsonb"`
+	IsActive         bool    `gorm:"column:is_active;type:bool;default:true"`
+	Phone            string  `gorm:"column:phone;type:varchar(20)"`
+	Gender           string  `gorm:"column:gender;type:varchar(20)"`
+	DOB              string  `gorm:"column:dob;type:date"`
 }
 
 type RankHistory struct {
@@ -34,11 +40,29 @@ type RankHistory struct {
 }
 
 type Address struct {
-	Line1 string
-	Line2 string
-	City  string
-	State string
-	Pin   string
+	Line1 string `json:"line1" binding:"required"`
+	Line2 string `json:"line2,omitempty"`
+	City  string `json:"city" binding:"required"`
+	State string `json:"state" binding:"required"`
+	Pin   string `json:"pin" binding:"required,len=6,numeric"`
+}
+
+func (a *Address) Scan(value interface{}) error {
+	if value == nil {
+		*a = Address{}
+		return nil
+	}
+
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("failed to scan Address: %v", value)
+	}
+
+	return json.Unmarshal(bytes, a)
+}
+
+func (a Address) Value() (driver.Value, error) {
+	return json.Marshal(a)
 }
 
 type Admin struct {

@@ -1,0 +1,2 @@
+ALTER TABLE students
+ADD COLUMN is_active BOOLEAN DEFAULT TRUE;

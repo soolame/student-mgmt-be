@@ -10,6 +10,8 @@ func SetUpRoutes(router gin.Engine) {
 	miscHandler := handlers.NewMiscHandler()
 	router.GET("/healthcheck", miscHandler.HealthCheck)
 
-	_ = router.Group("/v1")
+	v1 := router.Group("/v1")
+	SetUpAdminRoutes(v1)
+	SetUpStudentRoutes(v1)
 
 }

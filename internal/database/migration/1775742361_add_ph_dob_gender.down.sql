@@ -1,0 +1,4 @@
+ALTER TABLE students
+DROP COLUMN gender,
+DROP COLUMN phone,
+DROP COLUMN dob;
