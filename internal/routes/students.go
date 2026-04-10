@@ -19,5 +19,6 @@ func SetUpStudentRoutes(v1router *gin.RouterGroup) {
 	{
 		protected.POST("/", handler.CreateStudent)
 		protected.PATCH("/:id", handler.UpdateStudent)
+		protected.DELETE("/:id", handler.DeleteStudent)
 	}
 }

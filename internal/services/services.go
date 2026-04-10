@@ -168,3 +168,18 @@ func (s *Service) UpdateStudent(id int, req dto.UpdateStudent) (models.Student, 
 
 	return student, nil
 }
+
+func (s *Service) DeleteStudent(id int) error {
+	student, err := s.repo.GetStudentDetails(id)
+	if err != nil {
+		logger.Error("failed to fetch student error", err.Error())
+		return fmt.Errorf("No student found for the given id ")
+	}
+
+	Derr := s.repo.DeleteStudentByID(student.ID)
+	if Derr != nil {
+		return Derr
+	}
+	return nil
+
+}

@@ -107,3 +107,16 @@ func (r *Repository) UpdateStudent(student *models.Student, updates map[string]i
 func (r *Repository) CreateRankHistory(rank *models.RankHistory) error {
 	return database.GetAppDB().Create(rank).Error
 }
+
+func (r *Repository) DeleteStudentByID(id uint) error {
+	result := database.GetAppDB().Delete(&models.Student{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("student not found")
+	}
+
+	return nil
+}

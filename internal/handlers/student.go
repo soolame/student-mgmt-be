@@ -86,3 +86,19 @@ func (h *StudentHandler) UpdateStudent(ctx *gin.Context) {
 	}
 	ctx.JSON(200, gin.H{"student": student})
 }
+
+func (h *StudentHandler) DeleteStudent(ctx *gin.Context) {
+	id := ctx.Param("id")
+	intID, err := strconv.Atoi(id)
+	if err != nil {
+		logger.Error("invalid student id", err)
+		ctx.JSON(400, gin.H{"error": "invalid student id "})
+		return
+	}
+	Derr := h.service.DeleteStudent(intID)
+	if Derr != nil {
+		ctx.JSON(400, gin.H{"error": Derr.Error()})
+		return
+	}
+	ctx.JSON(200, gin.H{"message": "Deleted Student Succesfully"})
+}
