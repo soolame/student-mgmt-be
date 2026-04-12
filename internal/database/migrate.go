@@ -2,11 +2,15 @@ package database
 
 import (
 	"errors"
+	"os"
 
+	"ariga.io/atlas-provider-gorm/gormschema"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/soolame/student-mgmt-be/internal/config"
 	"github.com/soolame/student-mgmt-be/internal/logger"
+	"github.com/soolame/student-mgmt-be/internal/models"
 	"gorm.io/gorm"
 )
 
@@ -54,4 +58,17 @@ func RollbackLast(gormDB *gorm.DB, path string) error {
 
 	logger.Info(" rolled back 1 migration")
 	return nil
+}
+
+func GenerateSchema(cfg *config.Config) error {
+
+	stmts, err := gormschema.New("postgres").Load(
+		&models.RankHistory{},
+		&models.Student{},
+		&models.Admin{},
+	)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile("schema.sql", []byte(stmts), 0644)
 }
