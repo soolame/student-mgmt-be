@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/soolame/student-mgmt-be/internal/config"
 	database "github.com/soolame/student-mgmt-be/internal/database/gorm"
@@ -42,4 +43,8 @@ func main() {
 	}
 	fmt.Printf("\nCreate User with Email: %s ", admin.Email)
 
+}
+
+func init() {
+	time.Local = time.UTC
 }

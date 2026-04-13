@@ -1,0 +1,54 @@
+name: Go 1.25 CI Pipeline
+
+on:
+  push:
+    branches: [ "feature/rest-of-them" ]
+  pull_request:
+    branches: [ "feature/rest-of-them" ]
+
+jobs:
+  # Job 1: Quality Checks (Linting and Testing)
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Go 1.25
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25' # Using your specified version
+          cache: true
+
+      - name: Install golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.54.2
+
+      - name: Run Linter
+        run: make lint
+
+      - name: Run Tests
+        run: make test
+
+  # Job 2: Build and Push (Only on push to main branch)
+  build-and-push:
+    needs: quality-gate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Image
+        run: make docker-build
+
+      - name: Push to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/student-app:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/student-app:$(git rev-parse --short HEAD)

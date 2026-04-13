@@ -14,6 +14,21 @@ type Config struct {
 	MigrationEnabled bool
 	MigrationPath    string
 	Secret           string
+	APMConfig        *APMConfig
+}
+
+type APMConfig struct {
+	ApmEnabled         bool
+	NewRelicAppName    string
+	NewRelicLicenseKey string
+}
+
+func LoadApmConfig() *APMConfig {
+	return &APMConfig{
+		ApmEnabled:         GetBoolEnvWithDefault("APM_ENABLED", false),
+		NewRelicAppName:    GetRequiredEnv("NR_APP_NAME"),
+		NewRelicLicenseKey: GetRequiredEnv("NR_LICENSE_KEY"),
+	}
 }
 
 func (c Config) IsEnvLocal() bool {
@@ -47,6 +62,7 @@ func Load() *Config {
 		MigrationEnabled: GetBoolEnvWithDefault("MIGRATION_ENABLED", false),
 		MigrationPath:    GetEnvWithDefault("MIGRATION_PATH", "./internal/database/migration"),
 		Secret:           GetEnvWithDefault("SECRET", "Mysecret"),
+		APMConfig:        LoadApmConfig(),
 	}
 	return &globalConfig
 

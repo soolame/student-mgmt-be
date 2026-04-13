@@ -26,7 +26,7 @@ func LoadPostgresDB(host, user, pwd, port, dbname string, enforceSsl bool) (*gor
 	if enforceSsl {
 		sslMode = "require"
 	}
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=Asia/Shanghai", host, user, pwd, dbname, port, sslMode)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=UTC", host, user, pwd, dbname, port, sslMode)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
